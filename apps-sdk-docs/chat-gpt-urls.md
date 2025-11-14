@@ -6,6 +6,7 @@ https://developers.openai.com/apps-sdk/plan/tools
 https://developers.openai.com/apps-sdk/plan/components
 
 Develop
+https://developers.openai.com/apps-sdk/quickstart
 https://developers.openai.com/apps-sdk/build/mcp-server
 https://developers.openai.com/apps-sdk/build/custom-ux
 https://developers.openai.com/apps-sdk/build/auth
