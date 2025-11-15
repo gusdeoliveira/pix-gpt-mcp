@@ -6,13 +6,15 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js",
+    "start": "node --watch server.js",
     "emulate": "npx @modelcontextprotocol/inspector@latest http://localhost:8787/mcp"
   },
   "author": "gusdeoliveira",
   "license": "ISC",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.21.1",
+    "qrcode": "^1.5.4",
+    "steplix-emv-qrcps": "^0.0.8",
     "zod": "^3.25.76"
   }
 }
