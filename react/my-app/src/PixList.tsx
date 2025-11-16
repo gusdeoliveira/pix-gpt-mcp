@@ -1,11 +1,7 @@
-import { useState } from 'react'
 import './PixList.css'
 import { NavLink } from 'react-router';
 
 function PixList() {
-  const [count, setCount] = useState(0)
-  var pixBrCode = "test";
-  var pixQrCode = "test";
 
   return (
     <>

@@ -8,16 +8,16 @@ import pkg from 'steplix-emv-qrcps';
 const {Merchant}=pkg;
 import QRCode from 'qrcode';
 
-const pixHtml=readFileSync("public/pix-widget.html","utf8");
+const pixHtml=readFileSync("public/index.html","utf8");
 const QR_CODE_SIZE=400;
 
 const addPixInputSchema={
-  key: z.string().min(1),
-  amount: z.string().min(1).optional(),
-  name: z.string().min(1),
-  reference: z.string().min(1).optional(),
-  key_type: z.string().min(1),
-  city: z.string().min(1)
+  key: z.string().min(1).describe("Chave para o pagamento Pix."),
+  amount: z.string().min(1).optional().describe("Valor do pagamento Pix. Deixe esse campo vazio para pagamentos sem valor definido."),
+  name: z.string().min(1).describe("Nome do recebedor do pagamento Pix."),
+  reference: z.string().min(1).optional().describe("Referência do pagamento Pix. Opcional."),
+  key_type: z.string().min(1).describe("Tipo da chave Pix (Email, Telefone, CPF, CNPJ, Aleatória)."),
+  city: z.string().min(1).describe("Cidade do recebedor do pagamento Pix.")
 };
 
 const replyWithPix=(message) => ({
@@ -35,7 +35,7 @@ let pixQrCode="";
 let pixList=[];
 
 const format_text=(text) => {
-  return text.normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim()
+  return text.toString().normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim()
 }
 
 const formated_name=(name) => {
@@ -56,7 +56,7 @@ const formated_amount=(amount) => {
 }
 
 const formated_reference=(reference) => {
-  return this.constructor.format_text(reference).replace(' ','');
+  return format_text(reference).replace(' ','');
 }
 
 const formated_key=(key,key_type) => {
@@ -122,7 +122,10 @@ function createTodoServer() {
           uri: "ui://widget/pix.html",
           mimeType: "text/html+skybridge",
           text: pixHtml,
-          _meta: {"openai/widgetPrefersBorder": true},
+          _meta: {
+            "openai/widgetPrefersBorder": true,
+            "openai/max": true,
+          },
         },
       ],
     })
@@ -131,44 +134,51 @@ function createTodoServer() {
   server.registerTool(
     "generate_pix",
     {
-      title: "Generate Pix",
-      description: "Generate a Pix code and QR Code based on the payment information provided.",
+      title: "Gerar Pagamento Pix",
+      description: "Gera um pagamento pix (copia e cola e QR Code) baseado nas informações fornecidas, para pagamento no banco de preferência.",
       inputSchema: addPixInputSchema,
       _meta: {
         "openai/outputTemplate": "ui://widget/pix.html",
-        "openai/toolInvocation/invoking": "Generating Pix",
-        "openai/toolInvocation/invoked": "Generated Pix",
+        "openai/toolInvocation/invoking": "Gerando Pagamento Pix",
+        "openai/toolInvocation/invoked": "Pagamento Pix Gerado",
       },
     },
     async (args) => {
 
-      const normalizeInput=(value) => value?.trim?.()??"";
+      try {
 
-      const fields=[
-        {name: "key",error: "Missing Pix key."},
-        //{name: "amount",error: "Missing Pix amount."},
-        {name: "name",error: "Missing Pix recipient name."},
-        {name: "key_type",error: "Missing Pix key type."},
-        {name: "city",error: "Missing Pix city."}
-      ];
+        const normalizeInput=(value) => value?.trim?.()??"";
 
-      for(const {name,error} of fields) {
-        const value=normalizeInput(args?.[name]);
-        if(!value) return replyWithPix(error);
+        const fields=[
+          {name: "key",error: "Missing Pix key."},
+          //{name: "amount",error: "Missing Pix amount."},
+          {name: "name",error: "Missing Pix recipient name."},
+          {name: "key_type",error: "Missing Pix key type."},
+          {name: "city",error: "Missing Pix city."}
+        ];
+
+        for(const {name,error} of fields) {
+          const value=normalizeInput(args?.[name]);
+          if(!value) return replyWithPix(error);
+        }
+
+        let code=generate_qrcp(args);
+        await QRCode.toDataURL(code,{width: QR_CODE_SIZE,height: QR_CODE_SIZE})
+          .then(qrcode => {
+            pixBrCode=code;
+            pixQrCode=qrcode;
+            pixList.push({pixBrCode: pixBrCode,pixQrCode: pixQrCode});
+          })
+          .catch(err => {
+            console.error(err)
+          });
+
+        return replyWithPix(`Added Pix ${pixBrCode}`);
+
+      } catch(err) {
+        console.error(err);
+        return replyWithPix(`An error occurred while generating the payment, please try again later.`);
       }
-
-      let code=generate_qrcp(args);
-      await QRCode.toDataURL(code,{width: QR_CODE_SIZE,height: QR_CODE_SIZE})
-        .then(qrcode => {
-          pixBrCode=code;
-          pixQrCode=qrcode;
-          pixList.push({pixBrCode: pixBrCode,pixQrCode: pixQrCode});
-        })
-        .catch(err => {
-          console.error(err)
-        });
-
-      return replyWithPix(`Added Pix ${pixBrCode}`);
 
     }
   );
@@ -176,19 +186,26 @@ function createTodoServer() {
   server.registerTool(
     "list_pix",
     {
-      title: "List Pix",
-      description: "List all previous pix payments for this sessions.",
+      title: "Listar Pagamentos Pix Anteriores",
+      description: "Lista todos os pagamentos pix anteriores para esta sessão.",
       _meta: {
         "openai/outputTemplate": "ui://widget/pix.html",
-        "openai/toolInvocation/invoking": "Getting Pix List",
-        "openai/toolInvocation/invoked": "Returned Pix List",
+        "openai/toolInvocation/invoking": "Consultando Pagamentos Recentes",
+        "openai/toolInvocation/invoked": "Pagamentos Recentes Retornados",
       },
       annotations: {readOnlyHint: true}
     },
     async () => {
 
-      if(pixList.length==0) return replyWithPixList("No Pix created yet. Do you wish to create some?");
-      return replyWithPixList(`Completed.`);
+      try {
+
+        if(pixList.length==0) return replyWithPixList("No Pix created yet. Do you wish to create some?");
+        return replyWithPixList(`Completed.`);
+
+      } catch(err) {
+        console.error(err);
+        return replyWithPix(`An error occurred while generating the payment, please try again later.`);
+      }
 
     }
   );
