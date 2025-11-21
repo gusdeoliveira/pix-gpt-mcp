@@ -47,20 +47,23 @@
 html,
 body {
   width: 100%;
-  min-height: 100%;
+  height: auto;
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  padding: 16px;
   background: #f6f8fb;
+}
+
+#root {
+  padding: 16px;
 }
 
 main {
   width: 100%;
   max-width: 360px;
-  min-height: 260px;
+  height: auto;
   margin: 0 auto;
   background: #fff;
   border-radius: 16px;

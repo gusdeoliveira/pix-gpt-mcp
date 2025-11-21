@@ -99,7 +99,7 @@ const generate_qrcp=(args) => {
   const additionalDataFieldTemplate=Merchant.buildAdditionalDataFieldTemplate();
 
   if(args.reference) {
-    additionalDataFieldTemplate.setReferenceLabel(formated_reference(args));
+    additionalDataFieldTemplate.setReferenceLabel(formated_reference(args.reference));
   }
   else {
     additionalDataFieldTemplate.setReferenceLabel("***");

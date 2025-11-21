@@ -5,10 +5,11 @@
 @tailwind utilities;
 
 @layer utilities {
-  .overflow-auto > *,
-  .overflow-scroll > *,
-  .overflow-x-auto > *,
-  .overflow-y-auto > * {
+
+  .overflow-auto>*,
+  .overflow-scroll>*,
+  .overflow-x-auto>*,
+  .overflow-y-auto>* {
     scrollbar-color: auto;
   }
 
@@ -44,23 +45,26 @@
   font-family: "Inter", system-ui, -apple-system, sans-serif;
 }
 
+#root {
+  padding: 16px;
+}
+
 html,
 body {
   width: 100%;
-  min-height: 100%;
+  height: auto;
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  padding: 16px;
   background: #f6f8fb;
 }
 
 main {
   width: 100%;
   max-width: 360px;
-  min-height: 260px;
+  height: auto;
   margin: 0 auto;
   background: #fff;
   border-radius: 16px;
@@ -71,6 +75,10 @@ main {
 h2 {
   margin: 0 0 16px;
   font-size: 1.25rem;
+}
+
+.pix-result {
+  word-break: break-all;
 }
 
 form {
