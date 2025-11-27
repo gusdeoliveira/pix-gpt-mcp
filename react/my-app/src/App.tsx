@@ -130,9 +130,9 @@ function App() {
                 <p className="pix-code">{previewRecord.pixBrCode}</p>
               </>
             ) : (
-              <div className="pix-empty">
-                <p>Nenhum Pix disponível ainda.</p>
-                <p>Peça ao ChatGPT para gerar um Pix ou abra os ajustes manuais.</p>
+              <div className="pix-empty shimmer">
+                <div className="shimmer-block" />
+                <div className="shimmer-block short" />
               </div>
             )}
           </div>

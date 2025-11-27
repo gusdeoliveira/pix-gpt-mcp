@@ -9,7 +9,7 @@ const {Merchant} = pkg;
 import QRCode from "qrcode";
 
 const pixHtml = readFileSync("public/index.html", "utf8");
-const QR_CODE_SIZE = 400;
+const QR_CODE_SIZE = 300;
 
 const addPixInputSchema = {
   key: z.string().min(1).describe("Chave para o pagamento Pix."),
@@ -123,6 +123,7 @@ function createTodoServer() {
           _meta: {
             "openai/widgetPrefersBorder": true,
             "openai/max": true,
+            "openai/widgetDescription": "Widget para exibir códigos Pix (cópia e cola e QR Code) gerados. Ofereça ao usuário a opção de copiar o código Pix interativamente na sua resposta, uma vez que copiar o pix pelo widget não é suportado.",
           },
         },
       ],
@@ -169,7 +170,7 @@ function createTodoServer() {
             console.error(err);
           });
 
-        return replyWithPix(`Added Pix ${pixBrCode}`);
+        return replyWithPix(`Added Pix ${pixBrCode}. OFFER TO COPY THE CODE AND DOWNLOAD THE QR CODE IMAGE.`);
       } catch (err) {
         console.error(err);
         return replyWithPix(`An error occurred while generating the payment, please try again later.`);
@@ -226,7 +227,7 @@ const httpServer = createServer(async (req, res) => {
   }
 
   if (req.method === "GET" && url.pathname === "/") {
-    res.writeHead(200, {"content-type": "text/plain"}).end("Todo MCP server");
+    res.writeHead(200, {"content-type": "text/plain"}).end("11");
     return;
   }
 
@@ -262,6 +263,6 @@ const httpServer = createServer(async (req, res) => {
 });
 
 httpServer.listen(port, () => {
-  console.log(`Todo MCP server listening on http://localhost:${port}${MCP_PATH}`);
+  console.log(`11 on http://localhost:${port}${MCP_PATH}`);
 });
 

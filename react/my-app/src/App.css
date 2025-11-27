@@ -45,6 +45,7 @@ body {
   padding: 16px;
   background: var(--pix-bg);
   transition: background 0.3s ease;
+  overflow: hidden;
 }
 
 .pix-card {
@@ -69,6 +70,7 @@ body {
 .pix-header h1 {
   margin: 4px 0 8px;
   font-size: 1.5rem;
+  color: var(--pix-strong);
 }
 
 .pix-eyebrow {
@@ -216,7 +218,8 @@ button:not(:disabled):hover {
 }
 
 .pix-qr {
-  width: 100%;
+  width: min(320px, 100%);
+  margin: 0 auto;
   border-radius: 16px;
   border: 1px solid var(--pix-border);
   padding: 12px;
@@ -263,10 +266,14 @@ button:not(:disabled):hover {
 
 .pix-empty {
   border-radius: 12px;
-  border: 1px dashed var(--pix-border);
   padding: 20px;
   text-align: center;
   color: var(--pix-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  background: rgba(15, 23, 42, 0.04);
 }
 
 .pix-history {
@@ -327,4 +334,32 @@ button:not(:disabled):hover {
   color: var(--pix-subtle);
   border-top: 1px solid var(--pix-border);
   padding-top: 12px;
+}
+
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-block {
+  width: 100%;
+  max-width: 260px;
+  height: 18px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.12) 25%, rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0.12) 75%), linear-gradient(90deg, rgba(0, 0, 0, 0.08) 25%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.08) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite ease-in-out;
+}
+
+.shimmer-block.short {
+  max-width: 200px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: 200px 0;
+  }
 }

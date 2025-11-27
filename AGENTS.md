@@ -40,3 +40,5 @@
 - Encoding safety: avoid PowerShell `Get-Content`/`Set-Content`, `-replace`, or ad-hoc byte conversion for edits because they default to CP1252 and corrupt UTF-8; use `apply_patch` or Python with explicit UTF-8 read/write.
 - Tool copy/download prompts: ensure the Pix generation tool description asks ChatGPT to offer copy-code and QR-download options and to request all required inputs instead of assuming defaults.
 - Keep accents in PT-BR strings; no ASCII downgrades unless explicitly requested.
+- After replacing the widget bundle (`public/index.html`), restart the MCP server to pick up the new UI.
+- Always restart the MCP server after successful bundle updates (e.g., copying `react/my-app/dist/index.html` to `public/index.html`).
