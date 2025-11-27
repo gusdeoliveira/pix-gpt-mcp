@@ -13,7 +13,7 @@ const QR_CODE_SIZE = 300;
 
 const addPixInputSchema = {
   key: z.string().min(1).describe("Chave para o pagamento Pix."),
-  amount: z.string().min(1).optional().describe("Valor do pagamento Pix. Deixe esse campo vazio para pagamentos sem valor definido."),
+  amount: z.string().optional().describe("Valor do pagamento Pix. Deixe esse campo vazio para pagamentos sem valor definido."),
   name: z.string().min(1).describe("Nome do recebedor do pagamento Pix."),
   reference: z.string().min(1).optional().describe("Referência do pagamento Pix. Opcional."),
   key_type: z.string().min(1).describe("Tipo da chave Pix (Email, Telefone, CPF, CNPJ, Aleatória). Se omitido, tentar inferir a partir da chave."),

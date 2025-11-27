@@ -42,3 +42,4 @@
 - Keep accents in PT-BR strings; no ASCII downgrades unless explicitly requested.
 - After replacing the widget bundle (`public/index.html`), restart the MCP server to pick up the new UI.
 - Always restart the MCP server after successful bundle updates (e.g., copying `react/my-app/dist/index.html` to `public/index.html`).
+- Apps SDK UI: we use `@openai/apps-sdk-ui` for components (Badges, Buttons, CopyTooltip, EmptyMessage, LoadingIndicator) and design tokens. Import `@openai/apps-sdk-ui/css` with `@source` in CSS, wrap the app with `AppsSDKUIProvider` in `main.tsx`, and prefer these components for status, loading, copy affordances, and future UI changes.

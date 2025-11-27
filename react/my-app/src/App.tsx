@@ -1,5 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import "./App.css";
+import { Button } from "@openai/apps-sdk-ui/components/Button";
+import { Badge } from "@openai/apps-sdk-ui/components/Badge";
+import { EmptyMessage } from "@openai/apps-sdk-ui/components/EmptyMessage";
+import { LoadingIndicator } from "@openai/apps-sdk-ui/components/Indicator";
+import { CopyTooltip } from "@openai/apps-sdk-ui/components/Tooltip";
+import { ClipboardCopy } from "@openai/apps-sdk-ui/components/Icon";
 
 type PixToolOutput = {
   pixBrCode?: string;
@@ -116,8 +122,22 @@ function App() {
 
         <section className="pix-body">
           <div className="pix-preview">
-            <div className={`pix-status status-${status.type}`}>
-              <span>{status.message}</span>
+            <div className="status-row">
+              <Badge
+                color={
+                  status.type === "error"
+                    ? "danger"
+                    : status.type === "success"
+                    ? "success"
+                    : status.type === "loading"
+                    ? "info"
+                    : "secondary"
+                }
+                variant={status.type === "loading" ? "soft" : "solid"}
+              >
+                {status.message}
+              </Badge>
+              {status.type === "loading" && <LoadingIndicator size="sm" />}
             </div>
             {previewRecord?.pixBrCode ? (
               <>
@@ -127,13 +147,30 @@ function App() {
                   className="pix-qr"
                 />
                 <p className="pix-code-label">Código "copia e cola"</p>
-                <p className="pix-code">{previewRecord.pixBrCode}</p>
+                <CopyTooltip copyValue={previewRecord.pixBrCode} side="top" align="center">
+                  <p className="pix-code copy-hint" role="button" tabIndex={0}>
+                    {previewRecord.pixBrCode}
+                    <span className="copy-icon">
+                      <ClipboardCopy />
+                    </span>
+                  </p>
+                </CopyTooltip>
               </>
             ) : (
-              <div className="pix-empty shimmer">
-                <div className="shimmer-block" />
-                <div className="shimmer-block short" />
-              </div>
+              <EmptyMessage fill="static">
+                <EmptyMessage.Icon color="secondary">
+                  <LoadingIndicator size="lg" />
+                </EmptyMessage.Icon>
+                <EmptyMessage.Title>Gerando Pix…</EmptyMessage.Title>
+                <EmptyMessage.Description>
+                  Aguarde enquanto o código copia e cola e o QR são preparados.
+                </EmptyMessage.Description>
+                <EmptyMessage.ActionRow>
+                  <Button variant="soft" color="secondary" disabled>
+                    Em andamento
+                  </Button>
+                </EmptyMessage.ActionRow>
+              </EmptyMessage>
             )}
           </div>
         </section>

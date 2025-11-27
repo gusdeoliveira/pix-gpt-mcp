@@ -10,6 +10,7 @@ This repository hosts a ChatGPT App that lets the assistant create Brazilian Pix
 - **Widget surface (`public/index.html`)** - Delivered as `text/html+skybridge` so ChatGPT renders Pix cards inline. It binds to the host globals defined in `react/my-app/src/types/openai.d.ts` (`window.openai.callTool`, `requestDisplayMode`, `setWidgetState`, etc.) matching the Apps SDK UI contract.
 - **React playground (`react/my-app`)** - Experimental UI toolkit for iterating on widget behavior before copying HTML/CSS back into `public/`. Includes local typings for the ChatGPT host APIs.
 - **Docs (`gpt_apps_docs/`)** - Mirrors the official Apps SDK guidance for use-case planning, tool definition, component design, and user interaction heuristics that informed this implementation.
+- **Apps SDK UI** - UI components (Badges, Buttons, CopyTooltip, EmptyMessage, LoadingIndicator, etc.) and design tokens from `@openai/apps-sdk-ui` are used in the widget. CSS imports live in `react/my-app/src/App.css` (`@import "@openai/apps-sdk-ui/css"; @source "../node_modules/@openai/apps-sdk-ui";`) and the app is wrapped with `AppsSDKUIProvider` in `react/my-app/src/main.tsx`.
 
 ## Development Workflow
 - `npm install` - install MCP, QR, and EMV dependencies.
