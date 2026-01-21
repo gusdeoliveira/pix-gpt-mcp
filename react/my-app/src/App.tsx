@@ -5,12 +5,21 @@ import { Badge } from "@openai/apps-sdk-ui/components/Badge";
 import { EmptyMessage } from "@openai/apps-sdk-ui/components/EmptyMessage";
 import { LoadingIndicator } from "@openai/apps-sdk-ui/components/Indicator";
 import { CopyTooltip } from "@openai/apps-sdk-ui/components/Tooltip";
-import { ClipboardCopy } from "@openai/apps-sdk-ui/components/Icon";
+import { ClipboardCopy, Calendar } from "@openai/apps-sdk-ui/components/Icon";
+import { Select, type Option } from "@openai/apps-sdk-ui/components/Select";
 
 type PixToolOutput = {
   pixBrCode?: string;
   pixQrCode?: string;
 };
+
+const REMINDER_OPTIONS: Option[] = [
+  { value: "in 1 hour", label: "Em 1 hora" },
+  { value: "in 2 hours", label: "Em 2 horas" },
+  { value: "tomorrow", label: "Amanhã" },
+  { value: "in 1 week", label: "Em 1 semana" },
+  { value: "end of month", label: "No fim do mês" },
+];
 
 type Status =
   | { type: "idle"; message?: string }
@@ -50,6 +59,7 @@ function App() {
       ? { type: "success", message: "Pix pronto para copiar." }
       : { type: "idle", message: "Nenhum Pix gerado ainda." },
   );
+  const [reminderChoice, setReminderChoice] = useState<string>(REMINDER_OPTIONS[0].value);
   const [theme, setTheme] = useState<string>(() => host?.theme ?? "light");
   const [safeArea, setSafeArea] = useState<SafeInsets>(
     () => host?.safeArea?.insets ?? { top: 0, bottom: 0, left: 0, right: 0 },
@@ -64,6 +74,29 @@ function App() {
     }
     return undefined;
   }, [pixOutput]);
+
+  const handleCreateReminder = async () => {
+    if (!previewRecord?.pixBrCode) return;
+    if (!host || !host.sendFollowUpMessage) {
+      setStatus({
+        type: "error",
+        message: "Lembretes só estão disponíveis dentro do ChatGPT.",
+      });
+      return;
+    }
+
+    const reference = "referência não informada";
+    const name = "pagamento Pix";
+    const prompt = `Crie um lembrete para pagar este Pix ${reminderChoice}. Nome: ${name}. Referência: ${reference}. Código copia e cola: ${previewRecord.pixBrCode}. Pergunte ao usuário se deseja ajustar o horário ou adicionar detalhes.`;
+
+    try {
+      await host.sendFollowUpMessage({prompt});
+      setStatus({type: "success", message: "Lembrete solicitado ao ChatGPT."});
+    } catch (error) {
+      console.error(error);
+      setStatus({type: "error", message: "Não foi possível solicitar o lembrete."});
+    }
+  };
 
   useEffect(() => {
     const handleSetGlobals = (event: Event) => {
@@ -112,11 +145,9 @@ function App() {
       <main className="pix-card">
         <header className="pix-header">
           <div>
-            <p className="pix-eyebrow">Inline - Pagamentos Pix</p>
+            <p className="pix-eyebrow">Pagamentos Pix</p>
             <h1>Gerar pagamento Pix</h1>
-            <p className="pix-subtitle">
-              Gere um Pix pelo prompt. Quando o modelo chamar o tool, o QR e o copia-e-cola aparecem aqui.
-            </p>
+            <p className="pix-subtitle">Peça o Pix e mostraremos aqui o QR e o código copia e cola para pagar.</p>
           </div>
         </header>
 
@@ -155,6 +186,20 @@ function App() {
                     </span>
                   </p>
                 </CopyTooltip>
+                <div className="reminder-row">
+                  <Select
+                    value={reminderChoice}
+                    onChange={(option) => setReminderChoice(option.value)}
+                    options={REMINDER_OPTIONS}
+                    placeholder="Selecione um horário"
+                    size="sm"
+                    variant="soft"
+                    TriggerStartIcon={Calendar}
+                  />
+                  <Button variant="soft" color="primary" size="sm" onClick={handleCreateReminder}>
+                    Criar lembrete
+                  </Button>
+                </div>
               </>
             ) : (
               <EmptyMessage fill="static">

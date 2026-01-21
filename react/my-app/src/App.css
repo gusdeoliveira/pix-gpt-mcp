@@ -232,6 +232,14 @@ button:not(:disabled):hover {
   gap: 8px;
 }
 
+.reminder-row {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
 .preview-actions {
   display: flex;
   flex-wrap: wrap;

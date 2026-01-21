@@ -15,7 +15,7 @@ const addPixInputSchema = {
   key: z.string().min(1).describe("Chave para o pagamento Pix."),
   amount: z.string().optional().describe("Valor do pagamento Pix. Deixe esse campo vazio para pagamentos sem valor definido."),
   name: z.string().min(1).describe("Nome do recebedor do pagamento Pix."),
-  reference: z.string().min(1).optional().describe("Referência do pagamento Pix. Opcional."),
+  reference: z.string().optional().describe("Referência do pagamento Pix. Opcional."),
   key_type: z.string().min(1).describe("Tipo da chave Pix (Email, Telefone, CPF, CNPJ, Aleatória). Se omitido, tentar inferir a partir da chave."),
   city: z.string().min(1).describe("Cidade do recebedor do pagamento Pix."),
 };
@@ -123,7 +123,7 @@ function createTodoServer() {
           _meta: {
             "openai/widgetPrefersBorder": true,
             "openai/max": true,
-            "openai/widgetDescription": "Widget para exibir códigos Pix (cópia e cola e QR Code) gerados. Ofereça ao usuário a opção de copiar o código Pix interativamente na sua resposta, uma vez que copiar o pix pelo widget não é suportado.",
+            "openai/widgetDescription": "Widget para exibir códigos Pix (cópia e cola e QR Code) gerados.",
           },
         },
       ],
@@ -170,7 +170,7 @@ function createTodoServer() {
             console.error(err);
           });
 
-        return replyWithPix(`Added Pix ${pixBrCode}. OFFER TO COPY THE CODE AND DOWNLOAD THE QR CODE IMAGE.`);
+        return replyWithPix(`Added Pix ${pixBrCode}.`);
       } catch (err) {
         console.error(err);
         return replyWithPix(`An error occurred while generating the payment, please try again later.`);
