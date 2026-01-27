@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pix GPT MCP - Tools & Widgets</title>
+    <style>
+      :root {
+        --bg: #f7f7f6;
+        --surface: #ffffff;
+        --text: #111111;
+        --muted: #5c5c59;
+        --border: #e7e6e1;
+        --accent: #0f766e;
+        --accent-ink: #0b3b37;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "IBM Plex Sans", "Segoe UI", Roboto, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+      .page {
+        max-width: 980px;
+        margin: 0 auto;
+        padding: 48px 20px 28px;
+      }
+      header { margin-bottom: 28px; }
+      .eyebrow {
+        display: inline-block;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 8px;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: clamp(28px, 5vw, 40px);
+        color: var(--accent-ink);
+      }
+      .subtitle {
+        margin: 0;
+        color: var(--muted);
+        max-width: 70ch;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 16px;
+        margin-top: 24px;
+      }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 16px 18px;
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02);
+      }
+      .card h2 {
+        margin: 0 0 12px;
+        font-size: 16px;
+        color: var(--accent-ink);
+      }
+      .item {
+        padding: 10px 0;
+        border-top: 1px solid var(--border);
+      }
+      .item:first-of-type {
+        border-top: 0;
+        padding-top: 0;
+      }
+      .name { font-weight: 600; }
+      .meta {
+        font-size: 13px;
+        color: var(--muted);
+        margin-top: 2px;
+      }
+      code {
+        font-family: "IBM Plex Mono", "Cascadia Code", Consolas, monospace;
+        background: #f1f1ef;
+        padding: 2px 6px;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        font-size: 12px;
+      }
+      footer {
+        margin-top: 28px;
+        padding-top: 16px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px 18px;
+        color: var(--muted);
+        font-size: 14px;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .links { display: flex; gap: 12px 18px; flex-wrap: wrap; }
+      a {
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 600;
+      }
+      a:hover { text-decoration: underline; }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header>
+        <div class="eyebrow">Pix GPT MCP</div>
+        <h1>Tools & Widgets</h1>
+        <p class="subtitle">
+          A minimalist reference for the MCP surface exposed by this app. Use it as a tiny
+          "swagger-like" page for manual inspection during development.
+        </p>
+      </header>
+
+      <section class="grid" aria-label="MCP surface">
+        <article class="card" aria-labelledby="tools-title">
+          <h2 id="tools-title">Tools</h2>
+          <div class="item">
+            <div class="name">generate_pix</div>
+            <div class="meta">Generates a Pix "copy and paste" code and a QR Code.</div>
+            <div class="meta"><code>ui://widget/pix.html</code></div>
+          </div>
+          <div class="item">
+            <div class="name">list_pix</div>
+            <div class="meta">Lists prior Pix payments for the current session.</div>
+            <div class="meta"><code>readOnlyHint</code></div>
+          </div>
+        </article>
+
+        <article class="card" aria-labelledby="widgets-title">
+          <h2 id="widgets-title">Widgets</h2>
+          <div class="item">
+            <div class="name">pix-widget</div>
+            <div class="meta">HTML resource served as <code>text/html+skybridge</code>.</div>
+            <div class="meta"><code>ui://widget/pix.html</code></div>
+          </div>
+        </article>
+      </section>
+
+      <footer>
+        <div class="links">
+          <a href="/privacy">Privacy Policy</a>
+          <a href="/terms">Terms of Service</a>
+        </div>
+        <div>© 11 Feed 2026</div>
+      </footer>
+    </main>
+  </body>
+</html>

@@ -37,9 +37,10 @@
 - Default widget containers to `height: auto` (avoid `min-height: 100vh`) unless a full-viewport experience is explicitly required.
 - When the user asks to "remember" a practice, capture it here in `AGENTS.md` so future contributors see the instruction.
 - Let ChatGPT provide outer container framing; avoid adding extra borders/radius/shadow around the top-level widget surface, especially in dark mode where double borders can clash.
-- Encoding safety: avoid PowerShell `Get-Content`/`Set-Content`, `-replace`, or ad-hoc byte conversion for edits because they default to CP1252 and corrupt UTF-8; use `apply_patch` or Python with explicit UTF-8 read/write.
+- Encoding safety: do not use PowerShell `Get-Content`/`Set-Content`, `-replace`, or ad-hoc byte conversion for edits because they default to CP1252 and corrupt UTF-8; use `apply_patch` or Python with explicit UTF-8 read/write.
 - Tool copy/download prompts: ensure the Pix generation tool description asks ChatGPT to offer copy-code and QR-download options and to request all required inputs instead of assuming defaults.
 - Keep accents in PT-BR strings; no ASCII downgrades unless explicitly requested.
 - After replacing the widget bundle (`public/index.html`), restart the MCP server to pick up the new UI.
 - Always restart the MCP server after successful bundle updates (e.g., copying `react/my-app/dist/index.html` to `public/index.html`).
 - Apps SDK UI: we use `@openai/apps-sdk-ui` for components (Badges, Buttons, CopyTooltip, EmptyMessage, LoadingIndicator) and design tokens. Import `@openai/apps-sdk-ui/css` with `@source` in CSS, wrap the app with `AppsSDKUIProvider` in `main.tsx`, and prefer these components for status, loading, copy affordances, and future UI changes.
+- Public-facing pages (e.g., docs/privacy/terms) must be in English and include a copyright notice: `© 11 Feed 2026`.
