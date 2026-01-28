@@ -13,10 +13,17 @@ const docsHtml=readFileSync("public/docs.html","utf8");
 const privacyHtml=readFileSync("public/privacy.html","utf8");
 const termsHtml=readFileSync("public/terms.html","utf8");
 const QR_CODE_SIZE=300;
+const AMOUNT_REGEX=/^\d+(\.\d{2})?$/;
 
 const addPixInputSchema={
   key: z.string().min(1).describe("Chave para o pagamento Pix."),
-  amount: z.string().optional().describe("Valor do pagamento Pix. Deixe esse campo vazio para pagamentos sem valor definido."),
+  amount: z
+    .string()
+    .regex(AMOUNT_REGEX,"Use ponto para decimais, ex: 40.00.")
+    .optional()
+    .describe(
+      "Valor do pagamento Pix usando ponto como decimal (ex: 40.00). Deixe vazio para pagamentos sem valor definido.",
+    ),
   name: z.string().min(1).describe("Nome do recebedor do pagamento Pix."),
   reference: z.string().optional().describe("Referência do pagamento Pix. Opcional."),
   key_type: z.string().min(1).describe("Tipo da chave Pix (Email, Telefone, CPF, CNPJ, Aleatória). Se omitido, tentar inferir a partir da chave."),
@@ -50,11 +57,12 @@ const formated_city=(city) => {
 };
 
 const formated_amount=(amount) => {
-  if(amount) {
-    return amount.replace(".","").replace(",",".").replace(" ","").replace("R$","");
-  } else {
-    return "";
+  if(!amount) return "";
+  const normalized=amount.replace(/\s|R\$/g,"").trim();
+  if(!AMOUNT_REGEX.test(normalized)) {
+    throw new Error("Invalid Pix amount. Use 40.00.");
   }
+  return normalized;
 };
 
 const formated_reference=(reference) => {
@@ -138,15 +146,20 @@ function createTodoServer() {
   );
 
   server.registerTool(
-    "generate_pix",
+    "generate_code",
     {
-      title: "Gerar Pagamento Pix",
-      description: "Gera um pagamento pix (cópia e cola e QR Code) baseado nas informações fornecidas, para pagamento no banco de preferência. Sempre ofereça ao usuário a opção de copiar o código pix e baixar a imagem do QR, e nunca assuma valores: solicite explicitamente chave, nome, cidade, tipo de chave e quaisquer campos faltantes antes de gerar. Se o usuário não indicar o tipo de chave, infira-o a partir do valor da chave e envie o campo key_type correspondente.",
+      title: "Gerar Códigos para Pagamento Pix",
+      description: "Use isso para gerar um código para pagamento pix (cópia e cola e QR Code) baseado nas informações fornecidas, para pagamento no banco de preferência. Sempre ofereça ao usuário a opção de copiar o código pix, e nunca assuma valores: solicite explicitamente chave, nome, cidade, tipo de chave e quaisquer campos faltantes antes de gerar. Se o usuário não indicar o tipo de chave, infira-o a partir do valor da chave e envie o campo key_type correspondente.",
       inputSchema: addPixInputSchema,
       _meta: {
         "openai/outputTemplate": "ui://widget/pix.html",
-        "openai/toolInvocation/invoking": "Gerando Pagamento Pix",
-        "openai/toolInvocation/invoked": "Pagamento Pix Gerado",
+        "openai/toolInvocation/invoking": "Gerando Códigos de Pagamento Pix",
+        "openai/toolInvocation/invoked": "Códigos Pagamento Pix Gerado",
+      },
+      annotations: {
+        readOnlyHint: true,
+        openWorldHint: false,
+        destructiveHint: false
       },
     },
     async (args) => {
@@ -180,12 +193,15 @@ function createTodoServer() {
         return replyWithPix(`Added Pix ${pixBrCode}.`);
       } catch(err) {
         console.error(err);
+        if(err instanceof Error && err.message.startsWith("Invalid Pix amount")) {
+          return replyWithPix(err.message);
+        }
         return replyWithPix(`An error occurred while generating the payment, please try again later.`);
       }
     },
   );
 
-  server.registerTool(
+  /*server.registerTool(
     "list_pix",
     {
       title: "Listar Pagamentos Pix Anteriores",
@@ -195,7 +211,11 @@ function createTodoServer() {
         "openai/toolInvocation/invoking": "Consultando Pagamentos Recentes",
         "openai/toolInvocation/invoked": "Pagamentos Recentes Retornados",
       },
-      annotations: {readOnlyHint: true},
+      annotations: {
+        readOnlyHint: true,
+        openWorldHint: false,
+        destructiveHint: false
+      },
     },
     async () => {
       try {
@@ -206,7 +226,7 @@ function createTodoServer() {
         return replyWithPix(`An error occurred while generating the payment, please try again later.`);
       }
     },
-  );
+  );*/
 
   return server;
 }
