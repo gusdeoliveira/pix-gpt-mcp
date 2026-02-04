@@ -12,16 +12,33 @@
         color: #111111;
       }
       main {
-        max-width: 820px;
+        max-width: 940px;
         margin: 0 auto;
         padding: 48px 20px 28px;
       }
-      h1 { margin: 0 0 12px; color: #0b3b37; }
-      p { color: #5c5c59; line-height: 1.6; }
-      a { color: #0f766e; font-weight: 600; text-decoration: none; }
+      h1 {
+        margin: 0 0 12px;
+        color: #0b3b37;
+      }
+      h2 {
+        margin: 28px 0 10px;
+        color: #0b3b37;
+        font-size: 18px;
+      }
+      p,
+      li {
+        color: #5c5c59;
+        line-height: 1.6;
+      }
+      ul { padding-left: 20px; }
+      a {
+        color: #0f766e;
+        font-weight: 600;
+        text-decoration: none;
+      }
       a:hover { text-decoration: underline; }
       footer {
-        margin-top: 24px;
+        margin-top: 28px;
         padding-top: 12px;
         border-top: 1px solid #e7e6e1;
         display: flex;
@@ -30,18 +47,89 @@
         gap: 12px;
         flex-wrap: wrap;
       }
+      .muted {
+        color: #7a7a74;
+        font-size: 13px;
+      }
     </style>
   </head>
   <body>
     <main>
       <h1>Privacy Policy</h1>
       <p>
-        Placeholder: describe how data is handled, what is stored in memory, and which
-        information is never persisted.
+        This Privacy Policy explains how Pix GPT MCP (the “Service”) handles information. The Service
+        generates Pix “copy and paste” payloads and QR codes from inputs provided by the user inside ChatGPT.
+      </p>
+
+      <h2>Operator</h2>
+      <p>
+        The Service is operated by <strong>Gustavo de Oliveira Soares Silva</strong> (trading as
+        <strong>11 Feed</strong>). Contact: <strong>support@11feed.com</strong>.
+      </p>
+
+      <h2>No Data Acquisition</h2>
+      <ul>
+        <li><strong>We do not acquire personal data.</strong> We do not collect, store, sell, or rent user data.</li>
+        <li><strong>No analytics / ads.</strong> We do not use Google Analytics, ad networks, pixels, or similar tracking.</li>
+        <li><strong>No banking data.</strong> We never ask for or store bank credentials. We do not process payments.</li>
+      </ul>
+
+      <h2>Information Processed to Generate a Pix Code</h2>
+      <p>
+        To generate a Pix payload, the Service may receive values such as Pix key, recipient name, city, optional
+        reference, and optional amount. These values are used only to format the Pix payload and render the QR
+        image for you to pay in your bank of choice.
+      </p>
+      <p class="muted">
+        Tip: do not submit sensitive personal information beyond what is necessary for the payment (e.g., avoid IDs).
+      </p>
+
+      <h2>Cookies</h2>
+      <p>
+        The Service does not set cookies.
+      </p>
+
+      <h2>Third-Party Providers (Hosting / DNS)</h2>
+      <p>
+        The Service is hosted on Google Cloud Platform (Cloud Run). DNS is provided by Hostinger. These providers may
+        process limited technical request data as required to deliver the Service.
+      </p>
+
+      <h2>Security</h2>
+      <p>
+        We take reasonable precautions to protect the Service. However, no internet transmission is fully secure.
+      </p>
+
+      <h2>BACEN Reference and Disclaimer</h2>
+      <p>
+        QR codes are generated based on the Banco Central do Brasil (BACEN) BR Code specification (e.g., BR Code 2.0.1).
+        This is a <strong>static</strong> QR generation service: there is no integration with the PIX system or banks.
       </p>
       <p>
-        Placeholder: include contact details, legal basis, and guidance for privacy requests.
+        Before paying via QR code, verify that the recipient and amount shown by your banking app are correct. We are
+        not responsible for the accuracy and integrity of user-provided information or payments made from incorrect data.
       </p>
+      <p class="muted">
+        Implementation note: the Service uses open-source libraries to format the BR Code payload and render QR images.
+      </p>
+
+      <h2>Links to Other Websites</h2>
+      <p>
+        The Service may include links to third-party websites or resources. We are not responsible for their content,
+        information, services, products, or privacy practices.
+      </p>
+
+      <h2>Legal Compliance</h2>
+      <p>
+        We may comply with legal obligations and valid legal processes. Because we do not collect or store user data,
+        our ability to provide user-specific records is limited.
+      </p>
+
+      <h2>Changes</h2>
+      <p>
+        We may update this Privacy Policy from time to time. Changes take effect when posted on this page.
+      </p>
+
       <footer>
         <a href="/">Back to Tools & Widgets</a>
         <div>© 11 Feed 2026</div>
