@@ -3,6 +3,8 @@
 ## Overview
 This repository hosts a ChatGPT App that lets the assistant create Brazilian Pix "copia e cola" payments without leaving the thread. A Node.js MCP server exposes Pix-focused tools, streams a Pix widget resource, and serves everything over `http://localhost:8787/mcp` so the ChatGPT runtime can call the connector, render a QR code inline, and guide the user through payment confirmation steps.
 
+<img width="1024" height="504" alt="image" src="https://github.com/user-attachments/assets/095e965f-acf7-4e7e-86b4-625ba5b0bff2" />
+
 ## Architecture
 - **MCP server (`server.js`)** - Boots `@modelcontextprotocol/sdk` with `StreamableHTTPServerTransport`, registers the `pix-widget` HTML resource, and wires two tools:
   - `generate_pix`: validates user input with `zod`, formats merchant data via `steplix-emv-qrcps`, produces QR images with `qrcode`, caches the Pix payload, and returns both structured JSON (`pixBrCode`, `pixQrCode`) plus textual status messages.
