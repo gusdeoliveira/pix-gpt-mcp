@@ -35,11 +35,6 @@ const replyWithPix=(message) => ({
   structuredContent: {pixBrCode,pixQrCode},
 });
 
-const replyWithPixList=(message) => ({
-  content: message? [{type: "text",text: message}]:[],
-  structuredContent: {pixList},
-});
-
 let pixBrCode="";
 let pixQrCode="";
 let pixList=[];

@@ -44,7 +44,7 @@ function App() {
     if (host) {
       return (host.toolOutput as PixToolOutput) ?? {};
     }
-    return null;
+    return {};
   });
 
   const [status, setStatus] = useState<Status>(
