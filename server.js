@@ -12,6 +12,8 @@ const pixHtml=readFileSync("public/index.html","utf8");
 const docsHtml=readFileSync("public/docs.html","utf8");
 const privacyHtml=readFileSync("public/privacy.html","utf8");
 const termsHtml=readFileSync("public/terms.html","utf8");
+const faviconIco=readFileSync("favicon.ico");
+const logoSvg=readFileSync("Vector_11FEED.svg","utf8");
 const QR_CODE_SIZE=300;
 const AMOUNT_REGEX=/^\d+(\.\d{2})?$/;
 
@@ -250,6 +252,22 @@ const httpServer=createServer(async (req,res) => {
 
   if(req.method==="GET"&&url.pathname==="/") {
     res.writeHead(200,{"content-type": "text/html; charset=utf-8"}).end(docsHtml);
+    return;
+  }
+
+  if(req.method==="GET"&&url.pathname==="/favicon.ico") {
+    res.writeHead(200,{
+      "content-type": "image/x-icon",
+      "cache-control": "public, max-age=86400",
+    }).end(faviconIco);
+    return;
+  }
+
+  if(req.method==="GET"&&url.pathname==="/logo.svg") {
+    res.writeHead(200,{
+      "content-type": "image/svg+xml; charset=utf-8",
+      "cache-control": "public, max-age=86400",
+    }).end(logoSvg);
     return;
   }
 

@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <title>Pix GPT MCP - Tools & Widgets</title>
     <style>
       :root {
@@ -11,7 +12,7 @@
         --text: #111111;
         --muted: #5c5c59;
         --border: #e7e6e1;
-        --accent: #0f766e;
+        --accent: #f2c573;
         --accent-ink: #0b3b37;
       }
       * { box-sizing: border-box; }
@@ -20,6 +21,19 @@
         font-family: "IBM Plex Sans", "Segoe UI", Roboto, sans-serif;
         background: var(--bg);
         color: var(--text);
+      }
+      .brand-link {
+        position: fixed;
+        top: 14px;
+        left: 14px;
+        z-index: 10;
+        display: inline-flex;
+        align-items: center;
+      }
+      .brand-link img {
+        width: 40px;
+        height: auto;
+        display: block;
       }
       .page {
         max-width: 980px;
@@ -107,6 +121,9 @@
     </style>
   </head>
   <body>
+    <a class="brand-link" href="https://11feed.com" target="_blank" rel="noopener noreferrer" aria-label="11 Feed">
+      <img src="/logo.svg" alt="11 Feed logo" />
+    </a>
     <main class="page">
       <header>
         <div class="eyebrow">Pix GPT MCP</div>
