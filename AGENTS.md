@@ -10,6 +10,7 @@
 ## Build, Test, and Development Commands
 - `npm install` installs the MCP server, QR code, and EMV dependencies; run after pulling new changes.
 - `npm start` launches `server.js` with `node --watch`, rebuilding the Pix resources at `http://localhost:8787/mcp`.
+- Always start the MCP server externally (new PowerShell window) with `npm run start`; do not run it inside constrained Codex shell sessions.
 - `npm run emulate` opens `@modelcontextprotocol/inspector` against the local server; use this to validate widgets/tools before submitting changes.
 - Manual smoke test: `curl http://localhost:8787/` should return "Todo MCP server"; failures usually mean the watcher is still compiling.
 
@@ -27,6 +28,7 @@
 - Follow the Conventional Commits style observed in history (`feat:`, `chore:`, etc.), keeping subject lines under ~70 characters and describing the user-facing change.
 - Each PR should describe the change, reference related issues, and attach widget screenshots or inspector logs when UI or protocol behavior changes.
 - Note any new environment variables, migration steps, or manual setup tasks in the PR description so other agents can reproduce your results quickly.
+- When asked to push to GitHub, always create a pull request, merge it, and delete the branch after merge.
 
 ## Security & Configuration Tips
 - Never commit `.env` or Pix payloads containing real customer data; scrub keys before sharing logs.
@@ -37,7 +39,6 @@
 - Default widget containers to `height: auto` (avoid `min-height: 100vh`) unless a full-viewport experience is explicitly required.
 - When the user asks to "remember" a practice, capture it here in `AGENTS.md` so future contributors see the instruction.
 - Let ChatGPT provide outer container framing; avoid adding extra borders/radius/shadow around the top-level widget surface, especially in dark mode where double borders can clash.
-- Encoding safety: do not use PowerShell `Get-Content`/`Set-Content`, `-replace`, or ad-hoc byte conversion for edits because they default to CP1252 and corrupt UTF-8; use `apply_patch` or Python with explicit UTF-8 read/write.
 - Tool copy/download prompts: ensure the Pix generation tool description asks ChatGPT to offer copy-code and QR-download options and to request all required inputs instead of assuming defaults.
 - Keep accents in PT-BR strings; no ASCII downgrades unless explicitly requested.
 - After replacing the widget bundle (`public/index.html`), restart the MCP server to pick up the new UI.
