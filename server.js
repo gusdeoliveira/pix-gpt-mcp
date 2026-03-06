@@ -1,5 +1,7 @@
-﻿import {createServer} from "node:http";
+import {createServer} from "node:http";
 import {readFileSync} from "node:fs";
+import path from "node:path";
+import {fileURLToPath} from "node:url";
 import {McpServer} from "@modelcontextprotocol/sdk/server/mcp.js";
 import {StreamableHTTPServerTransport} from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import {z} from "zod";
@@ -8,12 +10,17 @@ import pkg from "steplix-emv-qrcps";
 const {Merchant}=pkg;
 import QRCode from "qrcode";
 
-const pixHtml=readFileSync("public/index.html","utf8");
-const docsHtml=readFileSync("public/docs.html","utf8");
-const privacyHtml=readFileSync("public/privacy.html","utf8");
-const termsHtml=readFileSync("public/terms.html","utf8");
-const faviconIco=readFileSync("favicon.ico");
-const logoSvg=readFileSync("Vector_11FEED.svg","utf8");
+const ROOT_DIR=path.dirname(fileURLToPath(import.meta.url));
+
+const readUtf8FromPublic=(filePath) => readFileSync(path.resolve(ROOT_DIR,"public",filePath),"utf8");
+const readBinaryFromPublic=(filePath) => readFileSync(path.resolve(ROOT_DIR,"public",filePath));
+
+const pixHtml=readUtf8FromPublic("index.html");
+const docsHtml=readUtf8FromPublic("docs.html");
+const privacyHtml=readUtf8FromPublic("privacy.html");
+const termsHtml=readUtf8FromPublic("terms.html");
+const faviconIco=readBinaryFromPublic("favicon.ico");
+const logoSvg=readUtf8FromPublic("logo.svg");
 const QR_CODE_SIZE=300;
 const AMOUNT_REGEX=/^\d+(\.\d{2})?$/;
 
@@ -315,3 +322,4 @@ const httpServer=createServer(async (req,res) => {
 httpServer.listen(port,() => {
   console.log(`11 on http://localhost:${port}${MCP_PATH}`);
 });
+
