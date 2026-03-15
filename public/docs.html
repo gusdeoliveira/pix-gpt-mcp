@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -12,7 +12,6 @@
         --text: #111111;
         --muted: #5c5c59;
         --border: #e7e6e1;
-        --accent: #d59f3e;
         --accent-ink: #0b3b37;
       }
       * { box-sizing: border-box; }
@@ -57,7 +56,7 @@
       .subtitle {
         margin: 0;
         color: var(--muted);
-        max-width: 70ch;
+        max-width: 75ch;
       }
       .grid {
         display: grid;
@@ -89,7 +88,7 @@
       .meta {
         font-size: 13px;
         color: var(--muted);
-        margin-top: 2px;
+        margin-top: 4px;
       }
       code {
         font-family: "IBM Plex Mono", "Cascadia Code", Consolas, monospace;
@@ -113,7 +112,7 @@
       }
       .links { display: flex; gap: 12px 18px; flex-wrap: wrap; }
       a {
-        color: var(--accent);
+        color: #111111;
         text-decoration: none;
         font-weight: 600;
       }
@@ -129,32 +128,33 @@
         <div class="eyebrow">Pix GPT MCP</div>
         <h1>Tools & Widgets</h1>
         <p class="subtitle">
-          A minimalist reference for the MCP surface exposed by this app. Use it as a tiny
-          "swagger-like" page for manual inspection during development.
+          Reference for the current MCP surface exposed by this app at <code>/mcp</code>.
+          This page mirrors the active tool/resource contract used by ChatGPT.
         </p>
       </header>
 
       <section class="grid" aria-label="MCP surface">
         <article class="card" aria-labelledby="tools-title">
-          <h2 id="tools-title">Tools</h2>
+          <h2 id="tools-title">Tool</h2>
           <div class="item">
-            <div class="name">generate_pix</div>
-            <div class="meta">Generates a Pix "copy and paste" code and a QR Code.</div>
-            <div class="meta"><code>ui://widget/pix.html</code></div>
-          </div>
-          <div class="item">
-            <div class="name">list_pix</div>
-            <div class="meta">Lists prior Pix payments for the current session.</div>
-            <div class="meta"><code>readOnlyHint</code></div>
+            <div class="name">generate_code</div>
+            <div class="meta">Generates a Pix copy-and-paste code and QR Code.</div>
+            <div class="meta"><code>outputTemplate: ui://widget/pix.v1.html</code></div>
+            <div class="meta"><code>readOnlyHint=true</code> <code>openWorldHint=false</code> <code>destructiveHint=false</code></div>
+            <div class="meta">Required input: <code>key</code>, <code>name</code>, <code>city</code>.</div>
+            <div class="meta">Optional input: <code>amount</code>, <code>reference</code>, <code>key_type</code> (auto-inferred when missing).</div>
+            <div class="meta">Structured output: <code>pixBrCode</code>, <code>pixQrCode</code>.</div>
           </div>
         </article>
 
         <article class="card" aria-labelledby="widgets-title">
-          <h2 id="widgets-title">Widgets</h2>
+          <h2 id="widgets-title">Widget Resource</h2>
           <div class="item">
             <div class="name">pix-widget</div>
-            <div class="meta">HTML resource served as <code>text/html+skybridge</code>.</div>
-            <div class="meta"><code>ui://widget/pix.html</code></div>
+            <div class="meta">URI: <code>ui://widget/pix.v1.html</code></div>
+            <div class="meta">MIME: <code>text/html;profile=mcp-app</code></div>
+            <div class="meta">Source: <code>public/index.html</code></div>
+            <div class="meta">Domain/CSP: <code>https://pix.mcp.11feed.com</code></div>
           </div>
         </article>
       </section>

@@ -235,9 +235,19 @@ button:not(:disabled):hover {
 .reminder-row {
   margin-top: 8px;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 8px;
   align-items: center;
+}
+
+.reminder-row > :first-child {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.reminder-row > :last-child {
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
 
 .preview-actions {

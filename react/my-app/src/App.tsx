@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import "./App.css";
 import { Button } from "@openai/apps-sdk-ui/components/Button";
 import { Badge } from "@openai/apps-sdk-ui/components/Badge";
@@ -11,6 +11,11 @@ import { Select, type Option } from "@openai/apps-sdk-ui/components/Select";
 type PixToolOutput = {
   pixBrCode?: string;
   pixQrCode?: string;
+};
+
+type PixWidgetState = {
+  reminderChoice?: string;
+  lastAction?: "reminder_option_changed" | "reminder_requested" | "code_copied";
 };
 
 const REMINDER_OPTIONS: Option[] = [
@@ -40,6 +45,8 @@ const getHost = () => (typeof window !== "undefined" ? window.openai : undefined
 
 function App() {
   const host = getHost();
+  const initialWidgetState = (host?.widgetState as PixWidgetState | null) ?? null;
+
   const [pixOutput, setPixOutput] = useState<PixToolOutput>(() => {
     if (host) {
       return (host.toolOutput as PixToolOutput) ?? {};
@@ -52,7 +59,11 @@ function App() {
       ? { type: "success", message: "Pix pronto para copiar." }
       : { type: "idle", message: "Nenhum Pix gerado ainda." },
   );
-  const [reminderChoice, setReminderChoice] = useState<string>(REMINDER_OPTIONS[0].value);
+  const [reminderChoice, setReminderChoice] = useState<string>(() => {
+    const remembered = initialWidgetState?.reminderChoice;
+    const exists = REMINDER_OPTIONS.some((option) => option.value === remembered);
+    return exists ? (remembered as string) : REMINDER_OPTIONS[0].value;
+  });
   const [theme, setTheme] = useState<string>(() => host?.theme ?? "light");
   const [safeArea, setSafeArea] = useState<SafeInsets>(
     () => host?.safeArea?.insets ?? { top: 0, bottom: 0, left: 0, right: 0 },
@@ -67,6 +78,38 @@ function App() {
     }
     return undefined;
   }, [pixOutput]);
+
+  const persistWidgetState = useCallback(
+    async (next: Partial<PixWidgetState>) => {
+      if (!host?.setWidgetState) return;
+      const current = (host.widgetState as PixWidgetState | null) ?? {};
+      const merged: PixWidgetState = {
+        ...current,
+        reminderChoice,
+        ...next,
+      };
+
+      try {
+        await host.setWidgetState(merged);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [host, reminderChoice],
+  );
+
+  const handleReminderChange = (option: Option) => {
+    setReminderChoice(option.value);
+    void persistWidgetState({
+      reminderChoice: option.value,
+      lastAction: "reminder_option_changed",
+    });
+  };
+
+  const handleCopyCode = () => {
+    setStatus({ type: "success", message: "Código Pix copiado." });
+    void persistWidgetState({ lastAction: "code_copied" });
+  };
 
   const handleCreateReminder = async () => {
     if (!previewRecord?.pixBrCode) return;
@@ -83,11 +126,12 @@ function App() {
     const prompt = `Crie um lembrete para pagar este Pix ${reminderChoice}. Nome: ${name}. Referência: ${reference}. Código copia e cola: ${previewRecord.pixBrCode}. Pergunte ao usuário se deseja ajustar o horário ou adicionar detalhes.`;
 
     try {
-      await host.sendFollowUpMessage({prompt});
-      setStatus({type: "success", message: "Lembrete solicitado ao ChatGPT."});
+      await host.sendFollowUpMessage({ prompt });
+      setStatus({ type: "success", message: "Lembrete solicitado ao ChatGPT." });
+      void persistWidgetState({ lastAction: "reminder_requested" });
     } catch (error) {
       console.error(error);
-      setStatus({type: "error", message: "Não foi possível solicitar o lembrete."});
+      setStatus({ type: "error", message: "Não foi possível solicitar o lembrete." });
     }
   };
 
@@ -108,6 +152,16 @@ function App() {
 
       if (detail.toolOutput) {
         setPixOutput(detail.toolOutput as PixToolOutput);
+      }
+
+      if (detail.widgetState && typeof detail.widgetState === "object") {
+        const persistedReminderChoice = (detail.widgetState as PixWidgetState).reminderChoice;
+        if (
+          typeof persistedReminderChoice === "string" &&
+          REMINDER_OPTIONS.some((option) => option.value === persistedReminderChoice)
+        ) {
+          setReminderChoice(persistedReminderChoice);
+        }
       }
     };
 
@@ -172,7 +226,18 @@ function App() {
                 />
                 <p className="pix-code-label">Código "copia e cola"</p>
                 <CopyTooltip copyValue={previewRecord.pixBrCode} side="top" align="center">
-                  <p className="pix-code copy-hint" role="button" tabIndex={0}>
+                  <p
+                    className="pix-code copy-hint"
+                    role="button"
+                    tabIndex={0}
+                    onClick={handleCopyCode}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        handleCopyCode();
+                      }
+                    }}
+                  >
                     {previewRecord.pixBrCode}
                     <span className="copy-icon">
                       <ClipboardCopy />
@@ -182,7 +247,7 @@ function App() {
                 <div className="reminder-row">
                   <Select
                     value={reminderChoice}
-                    onChange={(option) => setReminderChoice(option.value)}
+                    onChange={handleReminderChange}
                     options={REMINDER_OPTIONS}
                     placeholder="Selecione um horário"
                     size="sm"
@@ -199,7 +264,7 @@ function App() {
                 <EmptyMessage.Icon color="secondary">
                   <LoadingIndicator size="lg" />
                 </EmptyMessage.Icon>
-                <EmptyMessage.Title>Gerando Pix…</EmptyMessage.Title>
+                <EmptyMessage.Title>Gerando Pix...</EmptyMessage.Title>
                 <EmptyMessage.Description>
                   Aguarde enquanto o código copia e cola e o QR são preparados.
                 </EmptyMessage.Description>
