@@ -26,6 +26,7 @@ const QR_CODE_SIZE=300;
 const AMOUNT_REGEX=/^\d+(\.\d{2})?$/;
 const UUID_REGEX=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const EMAIL_REGEX=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const OPENAI_APPS_CHALLENGE_TOKEN="xS-uFziFvQqD56b2oWQptDpJ4wL-9wOZ78JAZDdk6K4";
 
 const addPixInputSchema={
   key: z.string().min(1).describe("Chave para o pagamento Pix."),
@@ -280,6 +281,11 @@ const httpServer=createServer(async (req,res) => {
       "Access-Control-Expose-Headers": "Mcp-Session-Id",
     });
     res.end();
+    return;
+  }
+
+  if(req.method==="GET"&&url.pathname==="/.well-known/openai-apps-challenge") {
+    res.writeHead(200,{"content-type": "text/plain; charset=utf-8"}).end(OPENAI_APPS_CHALLENGE_TOKEN);
     return;
   }
 
