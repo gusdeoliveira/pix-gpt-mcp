@@ -14,7 +14,6 @@ const ROOT_DIR=path.dirname(fileURLToPath(import.meta.url));
 
 const readUtf8FromPublic=(filePath) => readFileSync(path.resolve(ROOT_DIR,"public",filePath),"utf8");
 const readBinaryFromPublic=(filePath) => readFileSync(path.resolve(ROOT_DIR,"public",filePath));
-
 const pixHtml=readUtf8FromPublic("index.html");
 const docsHtml=readUtf8FromPublic("docs.html");
 const privacyHtml=readUtf8FromPublic("privacy.html");

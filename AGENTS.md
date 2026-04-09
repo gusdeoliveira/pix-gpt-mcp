@@ -2,14 +2,15 @@
 
 ## Project Structure & Module Organization
 - `server.js` hosts the MCP HTTP server, tool definitions, and Pix QR-code generation logic; keep reusable helpers co-located here or split into new modules under `lib/` when they grow.
-- `public/index.html` provides the Pix widget that inspectors embed; adjust UI assets here and keep it free of build artifacts.
-- `react/my-app` is a standalone React playground for future UI work; sync production-ready components back into `public/` before shipping.
+- `react/my-app` contains the Pix widget source that is built into `react/my-app/dist/index.html`.
+- `public/index.html` is the runtime widget served by the MCP resource; sync it from the React build before shipping.
 - `gpt_apps_docs/` stores reference material from the GPT Apps SDK and should remain untouched unless documentation needs updating.
 - Configuration lives in `.env` (only `PORT` today); add new secrets there and document them before merging.
 
 ## Build, Test, and Development Commands
 - `npm install` installs the MCP server, QR code, and EMV dependencies; run after pulling new changes.
-- `npm start` launches `server.js` with `node --watch`, rebuilding the Pix resources at `http://localhost:8787/mcp`.
+- `npm run build:widget` builds `react/my-app/dist/index.html` and copies it to `public/index.html`.
+- `npm start` runs `npm run build:widget` and then launches `server.js` with `node --watch` at `http://localhost:8787/mcp`.
 - Always start the MCP server externally (new PowerShell window) with `npm run start`; do not run it inside constrained Codex shell sessions.
 - `npm run emulate` opens `@modelcontextprotocol/inspector` against the local server; use this to validate widgets/tools before submitting changes.
 - Manual smoke test: `curl http://localhost:8787/` should return "Todo MCP server"; failures usually mean the watcher is still compiling.
@@ -41,7 +42,7 @@
 - Let ChatGPT provide outer container framing; avoid adding extra borders/radius/shadow around the top-level widget surface, especially in dark mode where double borders can clash.
 - Tool copy/download prompts: ensure the Pix generation tool description asks ChatGPT to offer copy-code and QR-download options and to request all required inputs instead of assuming defaults.
 - Keep accents in PT-BR strings; no ASCII downgrades unless explicitly requested.
-- After replacing the widget bundle (`public/index.html`), restart the MCP server to pick up the new UI.
-- Always restart the MCP server after successful bundle updates (e.g., copying `react/my-app/dist/index.html` to `public/index.html`).
+- Widget bundles are generated in `react/my-app/dist/` and synced to `public/index.html` via `npm run build:widget`.
+- Restart the MCP server after successful widget bundle sync so the resource reloads.
 - Apps SDK UI: we use `@openai/apps-sdk-ui` for components (Badges, Buttons, CopyTooltip, EmptyMessage, LoadingIndicator) and design tokens. Import `@openai/apps-sdk-ui/css` with `@source` in CSS, wrap the app with `AppsSDKUIProvider` in `main.tsx`, and prefer these components for status, loading, copy affordances, and future UI changes.
 - Public-facing pages (e.g., docs/privacy/terms) must be in English and include a copyright notice: `© 11 Feed 2026`.
