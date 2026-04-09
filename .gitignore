@@ -2,4 +2,4 @@ node_modules/
 .env
 .DS_Store
 npm-debug.log*
-cloud_build_script.yaml
+public/index.html

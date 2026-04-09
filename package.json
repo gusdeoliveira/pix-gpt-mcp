@@ -6,7 +6,9 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node --watch server.js",
+    "build:widget:app": "npm --prefix react/my-app run build",
+    "build:widget": "npm run build:widget:app && node scripts/sync-widget.mjs",
+    "start": "npm run build:widget && node --watch server.js",
     "emulate": "npx @modelcontextprotocol/inspector@latest http://localhost:8787/mcp"
   },
   "author": "gusdeoliveira",
